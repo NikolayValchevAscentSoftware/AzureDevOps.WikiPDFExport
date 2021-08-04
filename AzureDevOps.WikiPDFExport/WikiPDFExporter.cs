@@ -210,6 +210,7 @@ namespace azuredevops_export_wiki
                         File.WriteAllText(htmlPath, html);
                     }
 
+                    SaveHtml(html);
                     var path = ConvertHTMLToPDF(html);
 
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -734,7 +735,17 @@ namespace azuredevops_export_wiki
                 return $"[{Level}] {AbsolutePath}";
             }
         }
+
+        private void SaveHtml(string html)
+        {
+            var output = _options.HtmlOutput;
+
+            if (output == null)
+            {
+                output = Path.Combine(Directory.GetCurrentDirectory(), "wiki.html");
+            }
+
+            File.WriteAllText(output, html);
+        }
     }
-
-
 }

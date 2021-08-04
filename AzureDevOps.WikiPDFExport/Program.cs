@@ -102,5 +102,9 @@ namespace azuredevops_export_wiki
 
         [Option("hightlight-style", Required = false, HelpText = "hightlight.js style used for code blocks. Defaults to 'vs'. See https://github.com/highlightjs/highlight.js/tree/main/src/styles for a full list.")]
         public string HighlightStyle { get;set; }
+
+
+        [Option("html" , Required = false, HelpText = "Path and Filename of the html file, e.g. c:\\wiki.pdf ")]
+        public string HtmlOutput { get; set; }
     }
 }
