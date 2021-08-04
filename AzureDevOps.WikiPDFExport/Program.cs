@@ -104,7 +104,7 @@ namespace azuredevops_export_wiki
         public string HighlightStyle { get;set; }
 
 
-        [Option("html" , Required = false, HelpText = "Path and Filename of the html file, e.g. c:\\wiki.pdf ")]
+        [Option("htmlpath" , Required = false, HelpText = "Path to specify to export html files")]
         public string HtmlOutput { get; set; }
     }
 }

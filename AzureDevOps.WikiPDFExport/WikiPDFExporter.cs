@@ -28,6 +28,7 @@ namespace azuredevops_export_wiki
 {
     public class WikiPDFExporter : IWikiPDFExporter
     {
+        const string DEFAULT_HTML_NAME = "wiki.html";
         private Options _options;
         private TelemetryClient _telemetryClient;
         private string _path;
@@ -210,7 +211,7 @@ namespace azuredevops_export_wiki
                         File.WriteAllText(htmlPath, html);
                     }
 
-                    SaveHtml(html);
+                    //SaveHtml(html, string.IsNullOrEmpty(_options.HtmlName) ? DEFAULT_HTML_NAME : _options.HtmlName);
                     var path = ConvertHTMLToPDF(html);
 
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -253,7 +254,6 @@ namespace azuredevops_export_wiki
                 output = Path.Combine(Directory.GetCurrentDirectory(), "export.pdf");
             }
 
-            //somehow the options HeaderSettings.Left/Right/Center don't work in combination with HeaderSettings.HtmlURL
             var headerSettings = new HeaderSettings
             {
                 FontSize = 9,
@@ -496,11 +496,15 @@ namespace azuredevops_export_wiki
                 {
                     Log($"html:\n{html}", LogLevel.Debug, 1);
                 }
+
+                //save html files to dir 
+                var fileName = file.Name.Replace(".md", ".html");
+                SaveHtml(html, fileName);
                 sb.Append(html);
             }
 
             var result = sb.ToString();
-
+           
             return result;
         }
 
@@ -736,13 +740,22 @@ namespace azuredevops_export_wiki
             }
         }
 
-        private void SaveHtml(string html)
+        private void SaveHtml(string html, string fileName)
         {
-            var output = _options.HtmlOutput;
+            var output = string.Empty;
 
-            if (output == null)
+            if (string.IsNullOrEmpty(_options.HtmlOutput))
             {
-                output = Path.Combine(Directory.GetCurrentDirectory(), "wiki.html");
+                output = Path.Combine(Directory.GetCurrentDirectory(), fileName);
+            }
+            else
+            {
+                output = Path.Combine(_options.HtmlOutput, fileName);
+                if (!Directory.Exists(_options.HtmlOutput))
+                {
+                    Log($"Creating directory: {_options.HtmlOutput}", LogLevel.Information);
+                    Directory.CreateDirectory(_options.HtmlOutput);
+                }
             }
 
             File.WriteAllText(output, html);
